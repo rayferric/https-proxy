@@ -61,3 +61,6 @@ Which produces these two files:
 /etc/letsencrypt/live/example.com/privkey.pem # Private key
 /etc/letsencrypt/live/example.com/fullchain.pem # Public certificate
 ```
+
+Remember to restart HTTPS proxy if it was your first time running it.
+The HTTPS tunnel would not have started without the above files present.

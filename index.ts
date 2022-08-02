@@ -4,6 +4,7 @@ import proxy from 'express-http-proxy';
 import fs from 'fs';
 import http from 'http';
 import https from 'https';
+import { createHttpTerminator } from 'http-terminator';
 
 if (!process.env.URL) throw Error('Target URL must be specified.');
 if (!process.env.HTTP_PORT) throw Error('HTTP port must be specified.');
@@ -37,15 +38,29 @@ const httpsApp = express();
 
 httpsApp.use('/', proxy(process.env.URL));
 
-var key = fs.readFileSync(
-  `/etc/letsencrypt/live/${process.env.DOMAIN}/privkey.pem`,
-  'utf8'
-);
-var cert = fs.readFileSync(
-  `/etc/letsencrypt/live/${process.env.DOMAIN}/fullchain.pem`,
-  'utf8'
-);
+function runHttpsServer() {
+  if (!process.env.KEY_PATH) throw Error('Private key path must be specified.');
+  if (!process.env.CERT_PATH) throw Error('Public certificate path must be specified.');
 
-const httpsServer = https.createServer({ key: key, cert: cert }, httpsApp);
-httpsServer.listen(process.env.HTTPS_PORT);
-console.log('HTTPS server listening on port: ' + process.env.HTTPS_PORT);
+  if (!fs.existsSync(process.env.KEY_PATH) || !fs.existsSync(process.env.CERT_PATH)) {
+    console.log('Private key and/or public certificate files are not present. HTTPS tunnel will attempt to start again in 60 seconds.');
+    setTimeout(runHttpsServer, 1000 * 60);
+    return;
+  }
+
+  const key = fs.readFileSync(process.env.KEY_PATH, 'utf8');
+  const cert = fs.readFileSync(process.env.CERT_PATH, 'utf8');
+
+  const httpsServer = https.createServer({ key: key, cert: cert }, httpsApp);
+  httpsServer.listen(process.env.HTTPS_PORT);
+  console.log('HTTPS server listening on port: ' + process.env.HTTPS_PORT);
+  const httpTerminator = createHttpTerminator({ server: httpsServer });
+  
+  // Kill server after 24 hours to reload the certificate
+  setTimeout(async () => {
+    await httpTerminator.terminate();
+    runHttpsServer();
+  }, 1000 * 60 * 60 * 24);
+}
+
+runHttpsServer();
