@@ -24,7 +24,7 @@ KEY_PATH=/etc/letsencrypt/live/example.com/privkey.pem
 # Where the HTTPS server should read the certificate from
 CERT_PATH=/etc/letsencrypt/live/example.com/fullchain.pem
 
-# Where the HTTP server should serve static content from
+# Where the HTTP server should serve static content from (optional - content will not be served if this value is omitted)
 STATIC_PATH=/tmp/certbot-static/
 ```
 

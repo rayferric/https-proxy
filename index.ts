@@ -10,17 +10,23 @@ if (!process.env.URL) throw Error('Target URL must be specified.');
 if (!process.env.HTTP_PORT) throw Error('HTTP port must be specified.');
 if (!process.env.HTTPS_PORT) throw Error('HTTPS port must be specified.');
 
-// HTTP redirection/Certbot server
+// HTTP static/redirection server
 
 const httpApp = express();
 
-// Serve Certbot
-httpApp.use(
-  express.static('public/', {
-    fallthrough: true,
-    index: false
-  })
-);
+// Optionally serve static content like Certbot challenges
+if (!process.env.STATIC_PATH)
+  console.log(
+    'No static content path was specified. Static content will not be served during this session.'
+  );
+else {
+  httpApp.use(
+    express.static(process.env.STATIC_PATH, {
+      fallthrough: true,
+      index: false
+    })
+  );
+}
 
 httpApp.use('/', (req, res) => {
   res.redirect(
@@ -40,10 +46,16 @@ httpsApp.use('/', proxy(process.env.URL));
 
 function runHttpsServer() {
   if (!process.env.KEY_PATH) throw Error('Private key path must be specified.');
-  if (!process.env.CERT_PATH) throw Error('Public certificate path must be specified.');
+  if (!process.env.CERT_PATH)
+    throw Error('Public certificate path must be specified.');
 
-  if (!fs.existsSync(process.env.KEY_PATH) || !fs.existsSync(process.env.CERT_PATH)) {
-    console.log('Private key and/or public certificate files are not present. HTTPS tunnel will attempt to start again in 60 seconds.');
+  if (
+    !fs.existsSync(process.env.KEY_PATH) ||
+    !fs.existsSync(process.env.CERT_PATH)
+  ) {
+    console.log(
+      'Private key and/or public certificate files are not present. HTTPS tunnel will attempt to start again in 60 seconds.'
+    );
     setTimeout(runHttpsServer, 1000 * 60);
     return;
   }
@@ -55,7 +67,7 @@ function runHttpsServer() {
   httpsServer.listen(process.env.HTTPS_PORT);
   console.log('HTTPS server listening on port: ' + process.env.HTTPS_PORT);
   const httpTerminator = createHttpTerminator({ server: httpsServer });
-  
+
   // Kill server after 24 hours to reload the certificate
   setTimeout(async () => {
     await httpTerminator.terminate();
