@@ -18,3 +18,4 @@ services:
     volumes:
       - /etc/letsencrypt/live/example.com/:/mount/ssl/
       - /tmp/certbot-static/:/mount/static/
+    restart: always
