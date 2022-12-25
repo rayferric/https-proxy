@@ -2,7 +2,7 @@ dev:
 	docker-compose up --build alpine
 
 deploy:
-	docker-compose up -d alpine
+	docker-compose up -d --build alpine
 	docker-compose exec alpine /app/reload.py
 
 stop:
