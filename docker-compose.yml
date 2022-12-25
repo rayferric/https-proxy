@@ -1,21 +1,11 @@
 version: '3'
 services:
-  https-proxy:
+  # Alpine based Nginx + Certbot + Cron combo:
+  alpine:
     build:
-      context: .
-    ports:
-      - 80:80
-      - 443:443
-    environment:
-      URL: http://host.docker.internal:8080/
-      HTTP_PORT: 80
-      HTTPS_PORT: 443
-      KEY_PATH: /mount/letsencrypt/live/example.com/privkey.pem
-      CERT_PATH: /mount/letsencrypt/live/example.com/fullchain.pem
-      STATIC_PATH: /mount/certbot-static/
-    extra_hosts:
-      - host.docker.internal:host-gateway
+     context: .
+    # Nginx will probably have to access servers on the host so isolating it is pointless
+    network_mode: host
     volumes:
-      - /etc/letsencrypt/:/mount/letsencrypt/
-      - /tmp/certbot-static/:/mount/certbot-static/
-    restart: always
+      - ./letsencrypt:/etc/letsencrypt # The certificates will be stored here
+      - ./config.yml:/mount/config.yml # The configuration file

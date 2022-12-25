@@ -1,9 +1,8 @@
-/node_modules/
-/.dockerignore
-/.env
+/letsencrypt
 /.gitignore
-/.prettierignore
-/.prettierrc
-/docker-compose.yml
+/.dockerignore
 /Dockerfile
+/Makefile
 /README.md
+/config.yml
+/docker-compose.yml

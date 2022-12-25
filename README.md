@@ -1,48 +1,35 @@
 # HTTPS Proxy
 
-HTTPS server that forwards requests to a different URL.
+HTTPS server that forwards requests to a different IP address and port.
+The server can optionally choose between different destinations based on the domain name used by the visitor.
+Everything is grouped up as Docker Compose services - an Nginx instance and a Certbot certificate renewal cron job.
 
-Before attempting to deploy, you should [generate](#how-to-generate-certificate-with-certbot-on-linux) your certificate.
+## Getting Started
 
-## Local deployment
+### Deployment
 
-Example `.env` file for local deployment with Certbot on Linux, configured to use `example.com` domain:
+First, clone the repository to a working directory of choice:
 
-```
-# Target URL to which the incoming requests should be tunneled
-URL=http://localhost:8080/
-
-# The port to host the redirection/Certbot server on
-HTTP_PORT=80
-
-# The port on which to host the proxy
-HTTPS_PORT=433
-
-# Where the HTTPS server should read the private key from
-KEY_PATH=/etc/letsencrypt/live/example.com/privkey.pem
-
-# Where the HTTPS server should read the certificate from
-CERT_PATH=/etc/letsencrypt/live/example.com/fullchain.pem
-
-# Where the HTTP server should serve static content from (optional - content will not be served if this value is omitted)
-STATIC_PATH=/tmp/certbot-static/
+```sh
+$ git clone https://github.com/rayferric/https-proxy.git
 ```
 
-To deploy locally, use:
+Then modify the [config.yml](./config.yml) file to suit your needs.
+
+To deploy, use:
 
 ```bash
-NODE_ENV=production yarn install
-NODE_ENV=production yarn start
+docker-compose up
 ```
 
-## Docker deployment
+### Reloading the configuration
 
 `docker-compose.yml` is pre-configured to work with Certbot on Linux with `example.com` domain. Edit it however you like.
 
 To deploy with docker, use:
 
 ```bash
-docker-compose up
+docker-compose up  exec
 ```
 
 ## How to generate certificate with Certbot on Linux

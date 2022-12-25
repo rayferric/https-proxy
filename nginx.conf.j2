@@ -1,0 +1,45 @@
+events {}
+
+# Nginx should run in the foreground so that our custom Docker container will not halt
+daemon off;
+
+http {
+	server {
+		# The port of the HTTP server must be 80 for Let's Encrypt to work
+		listen 80;
+		# server_name ... is not needed because we choose to redirect all HTTP requests to HTTPS with no regard of the domain name
+
+		# Attempt to serve Let's Encrypt challenge files before redirecting to HTTPS 
+		root /tmp/certbot-static;
+
+		# Redirect all HTTP requests to HTTPS
+		location / {
+			try_files $uri @https;
+		}
+
+		location @https {
+			return 301 https://$host$request_uri;
+		}
+	}
+{% for domain, host in domains.items() %}
+
+	server {
+		listen 443 ssl;
+
+		# Use this proxy only for that one domain name
+		server_name {{ domain }};
+
+		# Setup Let's Encrypt certificates
+		ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+		ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+
+		# Enable session caching to improve performance
+		ssl_session_cache shared:SSL:10m; # m as in megabytes
+
+		location / {
+			# Proxy traffic to the target host
+			proxy_pass http://{{ host }};
+		}
+	}
+{% endfor %}
+}
