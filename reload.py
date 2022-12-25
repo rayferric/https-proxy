@@ -17,7 +17,7 @@ except:
 # Try to renew certificates
 
 if config["email"] != "" and len(config["domains"]) > 0:
-    certbot_cmd = "certbot certonly -m {} --agree-tos --non-interactive --webroot -w /tmp/certbot-static/".format(
+    certbot_cmd = "certbot certonly -m {} --agree-tos --non-interactive --expand --webroot -w /tmp/certbot-static/".format(
         config["email"]
     )
 
