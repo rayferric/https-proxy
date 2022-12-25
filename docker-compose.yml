@@ -1,11 +1,13 @@
-version: '3'
+version: "3"
 services:
-  # Alpine based Nginx + Certbot + Cron combo:
   alpine:
     build:
-     context: .
+      context: .
     # Nginx will probably have to access servers on the host so isolating it is pointless
     network_mode: host
+    restart: always
     volumes:
-      - ./letsencrypt:/etc/letsencrypt # The certificates will be stored here
-      - ./config.yml:/mount/config.yml # The configuration file
+      # The certificates will be stored here
+      - ./letsencrypt:/etc/letsencrypt
+      # The configuration file
+      - ./config.yml:/mount/config.yml

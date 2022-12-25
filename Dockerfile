@@ -1,5 +1,4 @@
-# Automated Nginx reverse proxy along with Cron and Certbot. Based on Alpine Linux
-
+# Alpine based Nginx + Certbot + Cron combo:
 FROM alpine:3
 
 # Install Python

@@ -1,10 +1,10 @@
 email: root@example.com
 domains:
-    # Domain mappings:
-    # domain: host:port
-    # Certbot will automatically generate and renew certificates for the given domains
-    # Requests on https://domain:443 will be forwarded by Nginx to http://host:port
-    # Wildcard domain names are supported, e.g.: *.example.com
+  # Domain mappings:
+  # domain: host:port
+  # Certbot will automatically generate and renew certificates for the given domains
+  # Requests on https://domain:443 will be forwarded by Nginx to http://host:port
+  # Wildcard domain names are supported, e.g.: *.example.com
 
-    example.com: localhost:8080
-    '*.example.com': localhost:8000
+  example.com: localhost:8080
+  "*.example.com": localhost:8000

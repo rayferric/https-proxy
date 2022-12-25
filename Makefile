@@ -7,3 +7,7 @@ deploy:
 
 stop:
 	docker-compose down
+
+format:
+	black .
+	prettier --write .

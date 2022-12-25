@@ -1,12 +1,19 @@
 # HTTPS Proxy
 
-HTTPS server that forwards requests to a different IP address and port.
+📬 HTTPS server that forwards requests to a different IP address and port.
 The server can optionally choose between different destinations based on the domain name used by the visitor.
 Everything is grouped up as Docker Compose services - an Nginx instance and a Certbot certificate renewal cron job.
 
+## Prerequisites
+
+- 🐋 [Docker Compose](https://docs.docker.com/compose)
+- 🐂 [GNU Make](https://www.gnu.org/software/make)
+- 🖤 [Black](https://pypi.org/project/black) _(Optional)_
+- 🌈 [Prettier](https://prettier.io) _(Optional)_
+
 ## Getting Started
 
-### Deployment
+### Cloning the Repository
 
 First, clone the repository to a working directory of choice:
 
@@ -14,40 +21,36 @@ First, clone the repository to a working directory of choice:
 $ git clone https://github.com/rayferric/https-proxy.git
 ```
 
+### Deployment
+
 Then modify the [config.yml](./config.yml) file to suit your needs.
 
-To deploy, use:
+To deploy HTTPS Proxy in a Docker container, use:
 
 ```bash
-docker-compose up
+$ make deploy
 ```
 
-### Reloading the configuration
+This command will start the Nginx server on your machine, but you can use it multiple times to instantly reload config.yml without interrupting the server.
 
-`docker-compose.yml` is pre-configured to work with Certbot on Linux with `example.com` domain. Edit it however you like.
+## About
 
-To deploy with docker, use:
+### Tech Stack
 
-```bash
-docker-compose up  exec
-```
+- Docker
+- Alpine Linux
+- Nginx
+- Cron
+- Python
+- Jinja2
+- Certbot
+- GNU Make
+- YAML
 
-## How to generate certificate with Certbot on Linux
+### Authors
 
-Ensure the HTTPS proxy is runnning.
+- Ray Ferric ([rayferric](https://github.com/rayferric))
 
-Then run the following command:
+### License
 
-```bash
-certbot certonly --webroot -w /tmp/certbot-static/ -d example.com
-```
-
-Which produces these two files:
-
-```bash
-/etc/letsencrypt/live/example.com/privkey.pem # Private key
-/etc/letsencrypt/live/example.com/fullchain.pem # Public certificate
-```
-
-You may see a bunch of messages about the HTTPS tunnel not starting if it was your first time running it.
-The HTTPS tunnel restarts every minute if no certificate is present and switches to 24 hour restart cycle once it has picked up the certificate.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
