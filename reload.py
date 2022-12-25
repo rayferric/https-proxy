@@ -17,19 +17,17 @@ except:
 # Try to renew certificates
 
 if config["email"] != "" and len(config["domains"]) > 0:
-    certbot_cmd = "certbot certonly -m {} --agree-tos --non-interactive --expand --webroot -w /tmp/certbot-static/".format(
-        config["email"]
-    )
-
-    # Add a -d switch for each domain
+    # Call Certbot multiple times to get separate certificate file for each domain 
     for domain in config["domains"]:
-        certbot_cmd += " -d " + domain
+        certbot_cmd = "certbot certonly -m {} --agree-tos --non-interactive --expand --webroot -w /tmp/certbot-static/ -d {}".format(
+            config["email"], domain
+        )
 
-    # Run the command
-    print('$ ' + certbot_cmd)
-    res = os.system(certbot_cmd)
-    if res != 0:
-        exit(res)
+        # Run the command
+        print('$ ' + certbot_cmd)
+        res = os.system(certbot_cmd)
+        if res != 0:
+            exit(res)
 
 # Generate the Nginx configuration file
 
