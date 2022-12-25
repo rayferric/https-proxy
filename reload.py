@@ -26,6 +26,7 @@ if config["email"] != "" and len(config["domains"]) > 0:
         certbot_cmd += " -d " + domain
 
     # Run the command
+    print('$ ' + certbot_cmd)
     res = os.system(certbot_cmd)
     if res != 0:
         exit(res)
@@ -46,6 +47,7 @@ with open("/etc/nginx/nginx.conf", "w") as f:
 
 # Reload Nginx
 
+print('$ nginx -s reload')
 res = os.system("nginx -s reload 2> /dev/null || true")
 if res != 0:
     exit(res)
