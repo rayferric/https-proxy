@@ -9,5 +9,7 @@ services:
     volumes:
       # The certificates will be stored here
       - ./letsencrypt:/etc/letsencrypt
-      # The configuration file
-      - ./config.yml:/mount/config.yml
+      # The configuration file cannot be mounted directly because recreating it
+      # would render the container stuck with the old configuration until a restart
+      # Thus we mount the whole parent directory instead
+      - .:/mount

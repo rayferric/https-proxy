@@ -33,6 +33,11 @@ $ make deploy
 
 This command will start the Nginx server on your machine, but you can use it multiple times to instantly reload config.yml without interrupting the server.
 
+### Updating the Configuration
+
+You can freely modify [config.yml](./config.yml) while HTTPS Proxy is running.
+As mentioned earlier, `$ make deploy` can be used to instantly trigger a configuration reload.
+
 ## About
 
 ### Tech Stack
