@@ -1,4 +1,5 @@
 email: root@example.com
+client_max_body_size: 1m # m as in megabytes
 domains:
   # Domain mappings:
   # domain: host:port
