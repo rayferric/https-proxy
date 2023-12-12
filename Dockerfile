@@ -28,7 +28,7 @@ RUN chmod +x ./reload.py
 # Create /tmp/certbot-static
 RUN mkdir /tmp/certbot-static
 
-# Generate basic Nginx configuration
+# Generate basic Nginx configuration with no domains so that Certbot can be run.
 RUN ./reload.py
 
 # Schedule a cron job to regenerate Nginx configuration and request new cartificates every day at midnight

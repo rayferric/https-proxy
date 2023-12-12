@@ -12,7 +12,7 @@ try:
     with open("/mount/config.yml") as file:
         config = yaml.safe_load(file.read())
 except:
-    config = {"email": "", "client_max_body_size": "1m", "domains": []}
+    config = {"email": "", "client_max_body_size": "1m", "domains": {}}
 
 # Try to renew certificates
 
@@ -37,7 +37,7 @@ with open("/app/nginx.conf.j2") as file:
     nginx_template = jinja2.Template(file.read(), trim_blocks=True, lstrip_blocks=True)
 
 # Render the configuration
-nginx_config = nginx_template.render(client_max_body_size=config["client_max_body_size"], domains=config["domains"])
+nginx_config = nginx_template.render(config)
 
 # Save the rendered configuration to a file
 with open("/etc/nginx/nginx.conf", "w") as f:
